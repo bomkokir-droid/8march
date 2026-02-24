@@ -29,50 +29,59 @@ canvas{position:fixed;inset:0;}
 <script>
 const canvas=document.getElementById("c");
 const ctx=canvas.getContext("2d");
-canvas.width=innerWidth;
-canvas.height=innerHeight;
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
 
 let particles=[];
+let started=false;
 
 function explode(x,y){
-  for(let i=0;i<80;i++){
+  for(let i=0;i<100;i++){
     particles.push({
       x:x,
       y:y,
       angle:Math.random()*Math.PI*2,
-      speed:Math.random()*4+2,
+      speed:Math.random()*5+2,
       alpha:1
     });
   }
 }
 
 function animate(){
-  ctx.fillStyle="rgba(7,8,18,0.3)";
+  ctx.fillStyle="rgba(7,8,18,0.25)";
   ctx.fillRect(0,0,canvas.width,canvas.height);
 
   particles.forEach((p,i)=>{
     p.x+=Math.cos(p.angle)*p.speed;
     p.y+=Math.sin(p.angle)*p.speed;
-    p.alpha-=0.015;
+    p.alpha-=0.02;
+
     ctx.fillStyle=`rgba(255,105,180,${p.alpha})`;
     ctx.beginPath();
     ctx.arc(p.x,p.y,3,0,Math.PI*2);
     ctx.fill();
+
     if(p.alpha<=0) particles.splice(i,1);
   });
 
   requestAnimationFrame(animate);
 }
 
-canvas.addEventListener("click",()=>{
-  document.getElementById("music").play();
-  explode(Math.random()*canvas.width,Math.random()*canvas.height/2);
-});
+function startExperience(e){
+  if(!started){
+    started=true;
+    document.getElementById("music").play();
+  }
 
-canvas.addEventListener("touchstart",()=>{
-  document.getElementById("music").play();
-  explode(Math.random()*canvas.width,Math.random()*canvas.height/2);
-});
+  let rect=canvas.getBoundingClientRect();
+  let x=(e.touches?e.touches[0].clientX:e.clientX)-rect.left;
+  let y=(e.touches?e.touches[0].clientY:e.clientY)-rect.top;
+
+  explode(x,y);
+}
+
+document.body.addEventListener("touchstart",startExperience,{passive:false});
+document.body.addEventListener("click",startExperience);
 
 animate();
 </script>
