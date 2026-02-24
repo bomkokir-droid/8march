@@ -1,0 +1,35 @@
+// Сцена 1 — несколько ракет по экрану
+  let interval=setInterval(launchRocket,600);
+
+  // Сцена 2 — через 6 сек большое сердце
+  setTimeout(()=>{
+    clearInterval(interval);
+    formBigHeart();
+    document.getElementById("mainText").innerHTML="Лиза ❤️";
+    document.getElementById("mainText").style.opacity=1;
+  },6000);
+
+  // Сцена 3 — финальная страница
+  setTimeout(()=>{
+    document.getElementById("page2").style.display="flex";
+  },10000);
+}
+
+canvas.addEventListener("click",startShow);
+canvas.addEventListener("touchstart",startShow);
+
+// ===== АНИМАЦИЯ =====
+function animate(){
+  ctx.fillStyle="rgba(7,8,18,0.3)";
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+
+  drawStars();
+  updateRockets();
+  updateParticles();
+
+  requestAnimationFrame(animate);
+}
+animate();
+</script>
+</body>
+</html>
